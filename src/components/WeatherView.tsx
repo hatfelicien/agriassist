@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { formatTimeAgo } from '../lib/timeUtils';
-import { useGeolocation, getNearestSector } from '../hooks/useGeolocation';
+// import { useGeolocation, getNearestSector } from '../hooks/useGeolocation';
 import AudioButton from './AudioButton';
 
 export default function WeatherView() {
@@ -11,21 +11,22 @@ export default function WeatherView() {
   const [weather, setWeather] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const { location } = useGeolocation();
+  // Disabled geolocation auto-fill to prevent filtering issues
+  // const { location } = useGeolocation();
 
-  console.log('☁️ WeatherView: State', { weatherCount: weather.length, loading, search, location });
+  console.log('☁️ WeatherView: State', { weatherCount: weather.length, loading, search });
 
-  useEffect(() => {
-    if (location) {
-      console.log('☁️ WeatherView: Location detected:', location);
-      const sector = getNearestSector(location.latitude, location.longitude);
-      console.log('☁️ WeatherView: Nearest sector:', sector);
-      // Only set search if sector is found and not empty
-      if (sector && sector.trim()) {
-        setSearch(sector);
-      }
-    }
-  }, [location]);
+  // Disabled geolocation auto-fill
+  // useEffect(() => {
+  //   if (location) {
+  //     console.log('☁️ WeatherView: Location detected:', location);
+  //     const sector = getNearestSector(location.latitude, location.longitude);
+  //     console.log('☁️ WeatherView: Nearest sector:', sector);
+  //     if (sector && sector.trim()) {
+  //       setSearch(sector);
+  //     }
+  //   }
+  // }, [location]);
 
   useEffect(() => {
     console.log('☁️ WeatherView: Loading weather data');
