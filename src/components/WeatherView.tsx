@@ -20,7 +20,10 @@ export default function WeatherView() {
       console.log('☁️ WeatherView: Location detected:', location);
       const sector = getNearestSector(location.latitude, location.longitude);
       console.log('☁️ WeatherView: Nearest sector:', sector);
-      setSearch(sector);
+      // Only set search if sector is found and not empty
+      if (sector && sector.trim()) {
+        setSearch(sector);
+      }
     }
   }, [location]);
 
@@ -66,10 +69,12 @@ export default function WeatherView() {
     }
   };
 
-  const filteredWeather = weather.filter(item =>
-    item.sector?.toLowerCase().includes(search.toLowerCase()) ||
-    item.cell?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredWeather = search.trim() 
+    ? weather.filter(item =>
+        item.sector?.toLowerCase().includes(search.toLowerCase()) ||
+        item.cell?.toLowerCase().includes(search.toLowerCase())
+      )
+    : weather;
 
   console.log('☁️ WeatherView: Filtered', filteredWeather.length, 'items');
 
