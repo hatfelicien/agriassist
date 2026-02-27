@@ -63,7 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log('Attempting login with:', email);
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      // Add timeout
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Login timeout - check internet connection')), 10000)
+      );
+      
+      const loginPromise = supabase.auth.signInWithPassword({ email, password });
+      
+      const { data, error } = await Promise.race([loginPromise, timeoutPromise]) as any;
       
       if (error) {
         console.error('Login error:', error.message);
