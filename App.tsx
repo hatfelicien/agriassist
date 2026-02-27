@@ -41,6 +41,7 @@ function AppNavigator() {
         ) : userRole === 'officer' || userRole === 'admin' ? (
           <>
             <Stack.Screen name="OfficerDashboard" component={OfficerDashboardScreen} />
+            <Stack.Screen name="Chat" component={ChatScreen} />
             <Stack.Screen name="Test" component={TestScreen} />
           </>
         ) : (
