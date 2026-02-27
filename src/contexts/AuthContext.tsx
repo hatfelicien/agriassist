@@ -45,9 +45,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadUserRole = async (userId: string) => {
     try {
-      const { data } = await supabase.from('users').select('role').eq('id', userId).single();
-      setUserRole(data?.role || 'farmer');
-    } catch {
+      const { data, error } = await supabase.from('users').select('role').eq('id', userId).single();
+      if (error) {
+        console.error('Error loading role:', error);
+        setUserRole('farmer');
+      } else {
+        setUserRole(data?.role || 'farmer');
+      }
+    } catch (err) {
+      console.error('Exception loading role:', err);
       setUserRole('farmer');
     } finally {
       setLoading(false);
@@ -65,8 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
       
-      console.log('Login successful:', data.user?.id);
-      return true;
+      if (data.user) {
+        console.log('Login successful:', data.user.id);
+        // Load role immediately
+        await loadUserRole(data.user.id);
+        return true;
+      }
+      
+      return false;
     } catch (error: any) {
       console.error('Login exception:', error.message);
       Alert.alert('Login Exception', error.message);
