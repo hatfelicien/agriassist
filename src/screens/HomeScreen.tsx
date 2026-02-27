@@ -52,11 +52,6 @@ export default function HomeScreen({ navigation }: any) {
             <Text style={styles.icon}>🐛</Text>
             <Text style={styles.cardTitle}>Pests</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Test')}>
-            <Text style={styles.icon}>🔧</Text>
-            <Text style={styles.cardTitle}>Test DB</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
