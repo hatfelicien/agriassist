@@ -43,6 +43,8 @@
   "type_message": "Type a message",
   "send": "Send",
   "typing": "Typing",
+  "no_messages_yet": "No messages yet",
+  "start_conversation": "Start a conversation with extension officers",
   "analytics": "Analytics",
   "total_farmers": "Total Farmers",
   "total_messages": "Total Messages",
