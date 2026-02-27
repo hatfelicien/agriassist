@@ -25,11 +25,10 @@ export default function LoginScreen({ navigation }: any) {
     try {
       if (isLogin) {
         const success = await login(email, password);
-        if (success) {
-          navigation.replace('Home');
-        } else {
+        if (!success) {
           Alert.alert('Login Failed', 'Invalid email or password');
         }
+        // Navigation will happen automatically via App.tsx
       } else {
         const success = await register(email, password, name);
         if (success) {
