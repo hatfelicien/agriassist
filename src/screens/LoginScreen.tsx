@@ -11,6 +11,8 @@ export default function LoginScreen({ navigation }: any) {
   
   const { login, register } = useAuth();
 
+  console.log('LoginScreen - loading:', loading, 'email:', email);
+
   const handleSubmit = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill all fields');
@@ -57,6 +59,7 @@ export default function LoginScreen({ navigation }: any) {
             placeholder="Name"
             value={name}
             onChangeText={setName}
+            editable={!loading}
           />
         )}
         
@@ -64,17 +67,25 @@ export default function LoginScreen({ navigation }: any) {
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => {
+            console.log('Email changed:', text);
+            setEmail(text);
+          }}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={true}
         />
         
         <TextInput
           style={styles.input}
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            console.log('Password changed');
+            setPassword(text);
+          }}
           secureTextEntry
+          editable={true}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
