@@ -1,12 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../lib/supabase';
 
 export default function HomeScreen({ navigation }: any) {
-  const { logout, userRole } = useAuth();
+  const { logout, userRole, user } = useAuth();
   const { t, i18n } = useTranslation();
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    loadUserName();
+  }, [user]);
+
+  const loadUserName = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('users').select('name, email').eq('id', user.id).single();
+    setUserName(data?.name || data?.email?.split('@')[0] || 'Farmer');
+  };
 
   const toggleLanguage = async () => {
     const newLang = i18n.language === 'rw' ? 'en' : 'rw';
@@ -38,7 +50,7 @@ export default function HomeScreen({ navigation }: any) {
 
       <ScrollView style={styles.content}>
         <View style={styles.welcome}>
-          <Text style={styles.welcomeTitle}>{t('welcome')}</Text>
+          <Text style={styles.welcomeTitle}>{t('welcome')}, {userName}!</Text>
           <Text style={styles.welcomeSubtitle}>{t('welcome_subtitle')}</Text>
         </View>
 
