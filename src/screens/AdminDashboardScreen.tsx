@@ -42,15 +42,22 @@ export default function AdminDashboardScreen({ navigation }: any) {
 
     setLoading(true);
     try {
+      // Get current session to restore later
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      
+      // Create new user
       const { data, error } = await supabase.auth.signUp({
         email,
-        password
+        password,
+        options: {
+          data: { role: 'officer' }
+        }
       });
 
       if (error) throw error;
 
       if (data.user) {
-        // Use upsert to avoid duplicate key error
+        // Insert user record
         const { error: insertError } = await supabase.from('users')
           .upsert({
             id: data.user.id,
@@ -58,15 +65,27 @@ export default function AdminDashboardScreen({ navigation }: any) {
             role: 'officer'
           }, { onConflict: 'id' });
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error('Error creating user entry:', insertError);
+        }
 
-        Alert.alert('Success', 'Officer created');
+        // Sign out the new user and restore admin session
+        await supabase.auth.signOut();
+        if (currentSession) {
+          await supabase.auth.setSession({
+            access_token: currentSession.access_token,
+            refresh_token: currentSession.refresh_token
+          });
+        }
+
+        Alert.alert('Success', 'Officer account created. They can now login.');
         setEmail('');
         setPassword('');
         fetchStats();
         fetchUsers();
       }
     } catch (error: any) {
+      console.error('Create officer error:', error);
       Alert.alert('Error', error.message);
     } finally {
       setLoading(false);
