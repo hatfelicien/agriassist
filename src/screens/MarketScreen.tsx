@@ -20,7 +20,7 @@ export default function MarketScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Text style={styles.backButton}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Market Prices</Text>
@@ -47,8 +47,8 @@ export default function MarketScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
-  header: { backgroundColor: '#22c55e', padding: 16 },
-  backButton: { color: 'white', fontSize: 16, marginBottom: 8 },
+  header: { backgroundColor: '#22c55e', paddingTop: 48, paddingBottom: 16, paddingHorizontal: 16 },
+  backButton: { color: 'white', fontSize: 16, marginBottom: 8, paddingVertical: 10 },
   title: { fontSize: 24, fontWeight: 'bold', color: 'white' },
   content: { flex: 1, padding: 16 },
   card: { backgroundColor: 'white', padding: 16, borderRadius: 12, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },

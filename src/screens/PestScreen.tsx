@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 
 export default function PestScreen({ navigation }: any) {
-  const { t, i18n } = useTranslation();
   const [pests, setPests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,10 +20,10 @@ export default function PestScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← {t('back_home')}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.backButton}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>{t('pest_alerts')}</Text>
+        <Text style={styles.title}>Pest Alerts</Text>
       </View>
 
       <ScrollView style={styles.content}>
@@ -34,11 +32,11 @@ export default function PestScreen({ navigation }: any) {
         ) : (
           pests.map((item) => (
             <View key={item.id} style={styles.card}>
-              <Text style={styles.cardTitle}>🐛 {i18n.language === 'rw' ? item.name_rw : item.name_en}</Text>
-              <Text style={styles.cardText}>{i18n.language === 'rw' ? item.description_rw : item.description_en}</Text>
+              <Text style={styles.cardTitle}>🐛 {item.name_en || item.name_rw}</Text>
+              <Text style={styles.cardText}>{item.description_en || item.description_rw}</Text>
               <View style={styles.treatment}>
-                <Text style={styles.treatmentLabel}>{t('treatment')}:</Text>
-                <Text style={styles.treatmentText}>{i18n.language === 'rw' ? item.treatment_rw : item.treatment_en}</Text>
+                <Text style={styles.treatmentLabel}>Treatment:</Text>
+                <Text style={styles.treatmentText}>{item.treatment_en || item.treatment_rw}</Text>
               </View>
             </View>
           ))
@@ -50,8 +48,8 @@ export default function PestScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
-  header: { backgroundColor: '#22c55e', padding: 16 },
-  backButton: { color: 'white', fontSize: 16, marginBottom: 8 },
+  header: { backgroundColor: '#22c55e', paddingTop: 48, paddingBottom: 16, paddingHorizontal: 16 },
+  backButton: { color: 'white', fontSize: 16, marginBottom: 8, paddingVertical: 10 },
   title: { fontSize: 24, fontWeight: 'bold', color: 'white' },
   content: { flex: 1, padding: 16 },
   card: { backgroundColor: 'white', padding: 16, borderRadius: 12, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },

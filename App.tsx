@@ -14,6 +14,7 @@ import MarketScreen from './src/screens/MarketScreen';
 import PestScreen from './src/screens/PestScreen';
 import ChatScreen from './src/screens/ChatScreen';
 import OfficerDashboardScreen from './src/screens/OfficerDashboardScreen';
+import AdminDashboardScreen from './src/screens/AdminDashboardScreen';
 import TestScreen from './src/screens/TestScreen';
 
 const Stack = createStackNavigator();
@@ -38,7 +39,11 @@ function AppNavigator() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="DebugAuth" component={DebugAuthScreen} />
           </>
-        ) : userRole === 'officer' || userRole === 'admin' ? (
+        ) : userRole === 'admin' ? (
+          <>
+            <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} />
+          </>
+        ) : userRole === 'officer' ? (
           <>
             <Stack.Screen name="OfficerDashboard" component={OfficerDashboardScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />

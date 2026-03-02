@@ -15,13 +15,11 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   useEffect(() => {
-    if (userRole === 'officer' || userRole === 'admin') {
-      navigation.replace('OfficerDashboard');
-    }
+    // Don't try to navigate - App.tsx handles routing based on role
   }, [userRole, navigation]);
 
   if (userRole === 'officer' || userRole === 'admin') {
-    return null;
+    return null; // App.tsx will show OfficerDashboard
   }
 
   return (
@@ -74,12 +72,12 @@ export default function HomeScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
-  header: { backgroundColor: '#22c55e', padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { backgroundColor: '#22c55e', paddingTop: 48, paddingBottom: 16, paddingHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 24, fontWeight: 'bold', color: 'white' },
   headerButtons: { flexDirection: 'row', gap: 8 },
   langBtn: { backgroundColor: 'white', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, marginRight: 8 },
   langText: { color: '#22c55e', fontWeight: 'bold', fontSize: 14 },
-  logoutBtn: { backgroundColor: 'white', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
+  logoutBtn: { backgroundColor: 'white', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
   logoutText: { color: '#22c55e', fontWeight: 'bold' },
   content: { flex: 1 },
   welcome: { backgroundColor: '#22c55e', margin: 16, padding: 20, borderRadius: 16 },

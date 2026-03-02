@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { encryptMessage, decryptMessage } from '../lib/encryption';
 
 export default function ChatScreen({ navigation }: any) {
-  const { t } = useTranslation();
   const { user, userRole } = useAuth();
   const [farmers, setFarmers] = useState<any[]>([]);
   const [selectedFarmer, setSelectedFarmer] = useState<any>(null);
@@ -120,7 +118,7 @@ export default function ChatScreen({ navigation }: any) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate('OfficerDashboard')}>
             <Text style={styles.backButton}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Farmers</Text>
@@ -163,16 +161,20 @@ export default function ChatScreen({ navigation }: any) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => {
           if (userRole === 'officer' || userRole === 'admin') {
-            setSelectedFarmer(null);
-            setMessages([]);
+            if (selectedFarmer) {
+              setSelectedFarmer(null);
+              setMessages([]);
+            } else {
+              navigation.navigate('OfficerDashboard');
+            }
           } else {
-            navigation.goBack();
+            navigation.navigate('Home');
           }
         }}>
           <Text style={styles.backButton}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>
-          {selectedFarmer ? selectedFarmer.email : t('chat_with_officers')}
+          {selectedFarmer ? selectedFarmer.email : 'Chat with Officers'}
         </Text>
       </View>
 
@@ -199,7 +201,7 @@ export default function ChatScreen({ navigation }: any) {
           style={styles.input}
           value={input}
           onChangeText={setInput}
-          placeholder={t('type_message')}
+          placeholder="Type a message..."
           multiline
           editable={!loading}
         />
@@ -213,8 +215,8 @@ export default function ChatScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
-  header: { backgroundColor: '#22c55e', padding: 16 },
-  backButton: { color: 'white', fontSize: 16, marginBottom: 8 },
+  header: { backgroundColor: '#22c55e', paddingTop: 48, paddingBottom: 16, paddingHorizontal: 16 },
+  backButton: { color: 'white', fontSize: 16, marginBottom: 8, paddingVertical: 8 },
   title: { fontSize: 20, fontWeight: 'bold', color: 'white' },
   farmerItem: { backgroundColor: 'white', padding: 16, marginHorizontal: 16, marginVertical: 4, borderRadius: 12, flexDirection: 'row', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
   farmerAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#22c55e', justifyContent: 'center', alignItems: 'center', marginRight: 12 },

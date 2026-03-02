@@ -45,12 +45,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadUserRole = async (userId: string) => {
     try {
-      const { data, error } = await supabase.from('users').select('role').eq('id', userId).single();
+      const { data, error } = await supabase.from('users').select('role').eq('id', userId).maybeSingle();
+      
       if (error) {
         console.error('Error loading role:', error);
         setUserRole('farmer');
+      } else if (!data) {
+        // User not in users table, create entry with email from auth.users
+        console.log('User not in users table, creating entry');
+        const { data: authUser } = await supabase.auth.getUser();
+        const { error: insertError } = await supabase.from('users').insert({ 
+          id: userId,
+          email: authUser?.user?.email || '',
+          role: 'farmer' 
+        });
+        if (insertError) {
+          console.error('Error creating user entry:', insertError);
+        }
+        setUserRole('farmer');
       } else {
-        setUserRole(data?.role || 'farmer');
+        setUserRole(data.role || 'farmer');
       }
     } catch (err) {
       console.error('Exception loading role:', err);
@@ -96,12 +110,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (email: string, password: string, name: string) => {
     try {
+      console.log('Attempting registration with:', email);
       const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error || !data.user) return false;
       
-      await supabase.from('users').insert({ id: data.user.id, email, role: 'farmer' });
+      if (error) {
+        console.error('Registration error:', error.message);
+        Alert.alert('Registration Error', error.message);
+        return false;
+      }
+      
+      if (!data.user) {
+        console.error('No user returned from signUp');
+        Alert.alert('Registration Error', 'No user created');
+        return false;
+      }
+      
+      console.log('User created:', data.user.id);
+      
+      // Insert into users table
+      const { error: insertError } = await supabase.from('users').insert({ 
+        id: data.user.id, 
+        email, 
+        role: 'farmer' 
+      });
+      
+      if (insertError) {
+        console.error('Users table insert error:', insertError.message);
+        // Don't fail registration if users table insert fails
+      }
+      
       return true;
-    } catch {
+    } catch (error: any) {
+      console.error('Registration exception:', error.message);
+      Alert.alert('Registration Exception', error.message);
       return false;
     }
   };
